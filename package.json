@@ -4,10 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "build": "tsc -p ."
   },
-  "author": "",
-  "license": "MIT",
+  "author": "Edu Ronqui <edu.ronqui@gmail.com>",
+  "license": "UNLICENSED",
   "dependencies": {
     "express": "^4.14.1"
   },
