@@ -1,5 +1,6 @@
 import { Request, Response, Application } from 'express';
-import * as utils from './uitls';
+import { DependencyManager } from './dependency-manager';
+import * as utils from './utils';
 import * as  fs from 'fs';
 
 export class BaseController {
@@ -25,13 +26,26 @@ export class BaseController {
 
         let controller = controller_file[name];
 
-        controller.routes.forEach((map) => {
-          let verb = (map.verb || 'get').toLowerCase();
+        controller.prototype.routes.forEach((route) => {
+          let verb = (route.verb || 'get').toLowerCase();
 
-          app[verb](map.route, (req, res) => {
-            let instance = new controller(req, res);
-            let params = utils.getFunctionParameters(instance[map.action])
-            instance[map.action](req.query[params[0]]);
+          let fullRoute = route.route;
+          if (route.baseRoute)
+            fullRoute = `${route.baseRoute}${route.route}`;
+
+          app[verb](fullRoute, (request, response) => {
+            let dependencyManager = new DependencyManager();
+
+            dependencyManager.registerValue('request', request);
+            dependencyManager.registerValue('response', response);
+            dependencyManager.registerConstructor(controller);
+
+            let instance = dependencyManager.resolve(controller.name);
+
+            let params = utils.getFunctionParameters(instance[route.action]);
+            let values = params.map((p) => utils.getParameterValue(request, p));
+
+            instance[route.action].apply(instance, values);
           });
         });
       }
