@@ -1,4 +1,4 @@
-import * as utils from './uitls';
+import * as utils from './utils';
 
 export class DependencyContainer {
 
@@ -17,11 +17,7 @@ export class DependencyContainer {
     let name = ctor.name.toLowerCase();
     this.dependencies[name] = {
       name: name,
-      invoke: (values) => {
-        let old = ctor;
-        ctor = function (...args) { return new old(...args); };
-        return ctor.apply(null, values);
-      },
+      invoke: (values) => Reflect.construct(ctor, values),
       params: utils.getFunctionParameters(ctor)
     };
   }
