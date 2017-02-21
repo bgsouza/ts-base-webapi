@@ -1,14 +1,14 @@
 import { BaseController } from '../lib/base-controller';
-import { HttpDecorator } from '../lib/http-decorator';
+import { get, route } from '../lib/http-decorator';
 
-@HttpDecorator.route('/about')
+@route('/about')
 export class AboutController extends BaseController {
 
   constructor(request, response) {
     super(request, response);
   }
 
-  @HttpDecorator.get('/')
+  @get('/')
   public async about() {
     return this.ok('Who, me?');
   }

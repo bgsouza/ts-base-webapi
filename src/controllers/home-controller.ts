@@ -1,5 +1,5 @@
 import { BaseController } from '../lib/base-controller';
-import { HttpDecorator } from '../lib/http-decorator';
+import { get } from '../lib/http-decorator';
 
 export class HomeController extends BaseController {
 
@@ -7,7 +7,7 @@ export class HomeController extends BaseController {
     super(request, response);
   }
 
-  @HttpDecorator.get('/home/:name')
+  @get('/home/:name')
   public async home(name: string) {
     return this.ok({ hi: `Hello, ${name}!` });
   }
